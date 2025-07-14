@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    ports:
+      - "27142:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - iot-net
+
+  iot-alert-engine:
+    build: .
+    container_name: iot-alert-engine
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    networks:
+      - iot-net
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/iot_alert_db
+
+volumes:
+  mongo-data:
+
+networks:
+  iot-net:
